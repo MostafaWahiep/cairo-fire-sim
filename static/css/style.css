@@ -1,0 +1,127 @@
+/* === Reset & Base === */
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
+  background:#0f1923;color:#e8edf2;
+  height:100vh;display:flex;flex-direction:column;overflow:hidden;
+}
+
+/* === Header === */
+header{display:flex;justify-content:space-between;align-items:center;padding:0 20px;height:52px;background:#1a2332;border-bottom:1px solid #2d4a5e}
+.header-left{display:flex;align-items:center;gap:12px}
+.logo{font-size:24px}
+header h1{font-size:16px;font-weight:600;letter-spacing:.5px}
+.badge{font-size:12px;padding:4px 10px;background:#243447;border-radius:12px;color:#8899aa}
+
+/* === Layout === */
+main{flex:1;display:flex;overflow:hidden}
+#map-container{flex:1;position:relative}
+#map{width:100%;height:100%}
+
+#sidebar{width:370px;background:#1a2332;border-left:1px solid #2d4a5e;display:flex;flex-direction:column;overflow:hidden}
+
+/* === Tabs === */
+.tabs{display:flex;border-bottom:1px solid #2d4a5e}
+.tab{flex:1;padding:10px 6px;background:none;border:none;color:#8899aa;font-size:12px;font-weight:500;cursor:pointer;border-bottom:2px solid transparent;transition:all .2s}
+.tab:hover{color:#e8edf2}
+.tab.active{color:#ff4d4d;border-bottom-color:#ff4d4d}
+.tab-content{display:none;padding:16px;overflow-y:auto;flex:1}
+.tab-content.active{display:block}
+
+/* === Cards === */
+.card{background:#243447;border-radius:8px;padding:14px;margin-bottom:12px}
+.card h3{font-size:12px;font-weight:600;color:#8899aa;text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px}
+
+/* === Mode buttons === */
+.mode-buttons{display:flex;gap:8px}
+.mode-btn{flex:1;padding:8px;border:1px solid #2d4a5e;background:#1a2332;color:#8899aa;border-radius:6px;cursor:pointer;font-size:13px;transition:all .2s}
+.mode-btn:hover{border-color:#ff4d4d;color:#e8edf2}
+.mode-btn.active{background:#ff4d4d;color:#fff;border-color:#ff4d4d}
+
+/* === Slider === */
+input[type=range]{width:100%;accent-color:#ff4d4d}
+.slider-labels{display:flex;justify-content:space-between;font-size:11px;color:#8899aa;margin-top:4px}
+#traffic-value{color:#ff4d4d;font-weight:600}
+
+/* === Toggles === */
+.toggle{display:flex;align-items:center;gap:8px;margin-bottom:8px;font-size:13px;cursor:pointer}
+.toggle input{accent-color:#ff4d4d}
+
+/* === Metrics grid === */
+.metrics-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px}
+.metric-card{background:#243447;border-radius:8px;padding:14px;text-align:center}
+.metric-card.highlight{border:1px solid #ff4d4d}
+.metric-value{font-size:24px;font-weight:700}
+.metric-label{font-size:10px;color:#8899aa;margin-top:4px}
+
+/* === Breakdown === */
+.breakdown-row{display:flex;align-items:center;gap:8px;padding:6px 0;font-size:13px}
+.breakdown-val{margin-left:auto;font-weight:600}
+.dot{width:10px;height:10px;border-radius:50%;display:inline-block}
+.dot.green{background:#2ecc71}.dot.yellow{background:#f1c40f}.dot.orange{background:#e67e22}.dot.red{background:#e74c3c}
+
+/* === Station list === */
+#station-list{max-height:300px;overflow-y:auto}
+.station-item{display:flex;align-items:center;justify-content:space-between;padding:8px;background:#1a2332;border-radius:6px;margin-bottom:4px;font-size:13px}
+.station-name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.btn-delete{background:none;border:none;color:#8899aa;cursor:pointer;padding:2px 6px;border-radius:4px;font-size:14px}
+.btn-delete:hover{color:#ff4d4d;background:#2d4a5e}
+
+/* === Input group === */
+.input-group{display:flex;gap:8px}
+.input-group input{flex:1;padding:8px 12px;background:#1a2332;border:1px solid #2d4a5e;border-radius:6px;color:#e8edf2;font-size:13px}
+.input-group button,#scenario-list button{padding:8px 14px;background:#ff4d4d;border:none;border-radius:6px;color:#fff;font-size:13px;cursor:pointer;font-weight:500}
+.input-group button:hover{background:#e63e3e}
+
+/* === Scenarios & Districts === */
+.scenario-item{display:flex;align-items:center;justify-content:space-between;padding:8px;background:#1a2332;border-radius:6px;margin-bottom:4px;font-size:13px}
+.scenario-item button{padding:4px 10px;font-size:12px}
+.district-item{display:flex;align-items:center;padding:8px 14px;background:#243447;border-radius:6px;margin-bottom:4px;font-size:13px}
+.district-name{flex:1}
+.district-time{font-weight:600;padding:2px 8px;border-radius:10px;font-size:12px}
+.time-good{background:#2ecc71;color:#000}
+.time-ok{background:#f1c40f;color:#000}
+.time-bad{background:#e67e22;color:#000}
+.time-critical{background:#e74c3c;color:#fff}
+.muted{color:#8899aa;font-size:13px}
+
+/* === Map overlay === */
+#map-overlay{position:absolute;bottom:20px;left:20px;z-index:1000;background:#1a2332ee;border:1px solid #2d4a5e;border-radius:8px;padding:12px 16px;font-size:13px;max-width:300px}
+#map-overlay.hidden{display:none}
+#route-info strong{color:#ff4d4d}
+
+/* === Loading === */
+.loading-overlay{position:fixed;inset:0;background:rgba(15,25,35,.85);display:flex;align-items:center;justify-content:center;z-index:9999;transition:opacity .3s}
+.loading-overlay.hidden{opacity:0;pointer-events:none}
+.loading-content{text-align:center;color:#8899aa}
+.spinner{width:40px;height:40px;border:3px solid #2d4a5e;border-top-color:#ff4d4d;border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 12px}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* === Station marker on map === */
+.station-icon{background:none!important;border:none!important}
+.station-marker{width:32px;height:32px;display:flex;align-items:center;justify-content:center;background:#ff4d4d;border:2px solid #fff;border-radius:50%;box-shadow:0 2px 8px rgba(0,0,0,.4);font-size:16px}
+
+/* === Criticality === */
+.btn-criticality{width:100%;padding:8px 14px;background:#ff4d4d;border:none;border-radius:6px;color:#fff;font-size:13px;cursor:pointer;font-weight:500}
+.btn-criticality:hover{background:#e63e3e}
+.hidden{display:none}
+.depth-row{display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:12px}
+.depth-label{width:100px;color:#8899aa;flex-shrink:0}
+.depth-bar-bg{flex:1;height:14px;background:#1a2332;border-radius:4px;overflow:hidden}
+.depth-bar-fill{height:100%;border-radius:4px;transition:width .3s}
+.depth-val{width:42px;text-align:right;font-weight:600;font-size:12px}
+
+/* === Optimal suggestion === */
+.btn-suggest{width:100%;padding:8px 14px;background:#2ecc71;border:none;border-radius:6px;color:#fff;font-size:13px;cursor:pointer;font-weight:500}
+.btn-suggest:hover{background:#27ae60}
+.suggest-summary{margin-bottom:10px}
+.suggest-stat{font-size:13px;margin-bottom:4px}
+.suggest-delta{font-weight:700;color:#2ecc71}
+.suggest-delta-good{font-weight:700;color:#2ecc71}
+.btn-accept{padding:6px 12px;background:#2ecc71;border:none;border-radius:6px;color:#fff;font-size:12px;cursor:pointer;font-weight:500;margin-right:6px}
+.btn-accept:hover{background:#27ae60}
+.btn-dismiss{padding:6px 12px;background:#243447;border:1px solid #2d4a5e;border-radius:6px;color:#8899aa;font-size:12px;cursor:pointer}
+.btn-dismiss:hover{color:#e8edf2;border-color:#ff4d4d}
+.suggest-icon{background:none!important;border:none!important}
+.suggest-marker{width:36px;height:36px;display:flex;align-items:center;justify-content:center;background:#2ecc71;border:2px solid #fff;border-radius:50%;box-shadow:0 2px 12px rgba(46,204,113,.5);font-size:18px;animation:pulse 1.5s ease-in-out infinite}
+@keyframes pulse{0%,100%{box-shadow:0 2px 12px rgba(46,204,113,.5)}50%{box-shadow:0 2px 24px rgba(46,204,113,.8)}}

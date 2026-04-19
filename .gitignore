@@ -1,0 +1,12 @@
+venv/
+__pycache__/
+*.pyc
+cache/
+.DS_Store
+
+# Unrelated files
+airplan_sim.py
+attention.py
+synth_analysis.R
+synth_plot.pdf
+mini_capstone.tex

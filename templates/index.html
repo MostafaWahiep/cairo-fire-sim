@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cairo Fire Station Simulator</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <link rel="stylesheet" href="/static/css/style.css"/>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <span class="logo">🔥</span>
+    <h1>Cairo Fire Station Simulator</h1>
+  </div>
+  <div class="header-right">
+    <span class="badge" id="network-info">Loading…</span>
+  </div>
+</header>
+
+<main>
+  <!-- ============ MAP ============ -->
+  <div id="map-container">
+    <div id="map"></div>
+    <div id="map-overlay" class="hidden">
+      <div id="route-info"></div>
+    </div>
+  </div>
+
+  <!-- ============ SIDEBAR ============ -->
+  <aside id="sidebar">
+    <div class="tabs">
+      <button class="tab active" data-tab="controls">Controls</button>
+      <button class="tab" data-tab="metrics">Metrics</button>
+      <button class="tab" data-tab="districts">Districts</button>
+      <button class="tab" data-tab="scenarios">Scenarios</button>
+    </div>
+
+    <!-- Controls -->
+    <div class="tab-content active" id="tab-controls">
+      <div class="card">
+        <h3>Interaction Mode</h3>
+        <div class="mode-buttons">
+          <button class="mode-btn active" data-mode="inspect">🔍 Inspect</button>
+          <button class="mode-btn" data-mode="add">➕ Add Station</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Traffic Conditions</h3>
+        <input type="range" id="traffic-slider" min="0.5" max="3.0" step="0.1" value="1.0">
+        <div class="slider-labels">
+          <span>Light</span><span id="traffic-value">1.0×</span><span>Heavy</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Display</h3>
+        <label class="toggle"><input type="checkbox" id="show-coverage" checked><span>Coverage overlay</span></label>
+        <label class="toggle"><input type="checkbox" id="show-stations" checked><span>Station markers</span></label>
+      </div>
+
+      <div class="card">
+        <h3>Fire Stations (<span id="station-count">0</span>)</h3>
+        <div id="station-list"></div>
+      </div>
+
+      <div class="card">
+        <h3>Optimal Placement</h3>
+        <p class="muted" style="margin-bottom:8px">Find the best location for a new station.</p>
+        <button id="btn-suggest" class="btn-suggest">Find Best Location</button>
+        <div id="suggest-loading" class="hidden" style="text-align:center;padding:10px"><div class="spinner" style="margin:0 auto 8px"></div><span class="muted">Evaluating candidates…</span></div>
+        <div id="suggest-result" class="hidden" style="margin-top:10px">
+          <div class="suggest-summary" id="suggest-summary"></div>
+          <button id="btn-accept-suggest" class="btn-accept">Add This Station</button>
+          <button id="btn-dismiss-suggest" class="btn-dismiss">Dismiss</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Metrics -->
+    <div class="tab-content" id="tab-metrics">
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <div class="metric-value" id="m-avg-time">--</div>
+          <div class="metric-label">Avg Response (min)</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value" id="m-median-time">--</div>
+          <div class="metric-label">Median (min)</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value" id="m-pop-avg">--</div>
+          <div class="metric-label">Pop-Weighted Avg</div>
+        </div>
+        <div class="metric-card highlight">
+          <div class="metric-value" id="m-pct8">--</div>
+          <div class="metric-label">% Under 8 min</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value" id="m-p90">--</div>
+          <div class="metric-label">90th Percentile</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value" id="m-equity">--</div>
+          <div class="metric-label">Equity Score</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Coverage Distribution</h3>
+        <canvas id="chart-distribution"></canvas>
+      </div>
+
+      <div class="card">
+        <h3>Response Time Breakdown</h3>
+        <div class="breakdown">
+          <div class="breakdown-row"><span class="dot green"></span><span>Under 4 min</span><span class="breakdown-val" id="b-under4">--</span></div>
+          <div class="breakdown-row"><span class="dot yellow"></span><span>4 – 8 min</span><span class="breakdown-val" id="b-4to8">--</span></div>
+          <div class="breakdown-row"><span class="dot orange"></span><span>8 – 12 min</span><span class="breakdown-val" id="b-8to12">--</span></div>
+          <div class="breakdown-row"><span class="dot red"></span><span>Over 12 min</span><span class="breakdown-val" id="b-over12">--</span></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Max / Tail</h3>
+        <div class="breakdown">
+          <div class="breakdown-row"><span>P95</span><span class="breakdown-val" id="m-p95">--</span></div>
+          <div class="breakdown-row"><span>Max</span><span class="breakdown-val" id="m-max-time">--</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Districts -->
+    <div class="tab-content" id="tab-districts">
+      <div class="card">
+        <h3>Response Time by District</h3>
+        <canvas id="chart-districts"></canvas>
+      </div>
+      <div id="district-list"></div>
+
+      <div class="card" style="margin-top:12px">
+        <h3>Station Criticality Analysis</h3>
+        <p class="muted" style="margin-bottom:10px">How much does each station matter? Click to compute.</p>
+        <button id="btn-criticality" class="btn-criticality">Run Analysis</button>
+        <div id="criticality-loading" class="hidden" style="text-align:center;padding:10px"><div class="spinner" style="margin:0 auto 8px"></div><span class="muted">Running remove-one analysis…</span></div>
+        <div id="criticality-results" class="hidden">
+          <div class="card" style="margin-top:10px;padding:10px">
+            <h3>Coverage Depth</h3>
+            <p class="muted" style="margin-bottom:8px">% of nodes reachable by N stations within 8 min</p>
+            <div id="depth-bars"></div>
+          </div>
+          <canvas id="chart-criticality" style="margin-top:10px"></canvas>
+          <div id="criticality-list" style="margin-top:10px"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scenarios -->
+    <div class="tab-content" id="tab-scenarios">
+      <div class="card">
+        <h3>Save Current Layout</h3>
+        <div class="input-group">
+          <input type="text" id="scenario-name" placeholder="Scenario name…" maxlength="60">
+          <button id="btn-save-scenario">Save</button>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Saved Scenarios</h3>
+        <div id="scenario-list"><p class="muted">No saved scenarios yet.</p></div>
+      </div>
+    </div>
+  </aside>
+</main>
+
+<!-- Loading overlay -->
+<div id="loading" class="loading-overlay">
+  <div class="loading-content">
+    <div class="spinner"></div>
+    <p>Computing coverage…</p>
+  </div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="/static/js/app.js"></script>
+</body>
+</html>
